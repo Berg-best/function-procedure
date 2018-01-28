@@ -1,0 +1,138 @@
+存储函数
+--存储函数
+create or replace FUNCTION function_name(dept_id number,salary numbber)
+return number
+is
+--函数使用过程中,需要声明的变量,记录类型,cursor
+begin
+  --函数的执行体
+
+exception
+  --处理函数执行函数体中的过程
+  
+end;         --在sql上输入/  回车创建
+
+--例子1  打印'hello,,world'
+create or  replace function  hello_world(logo varchar2)
+return VARCHAR2
+Is     --is可以理解为declare
+begin 
+  return 'hello,world'||logo;
+end;     
+--  执行方式1: sql调用:select hello_world('df')from dual;
+--  执行方式2: 在记事本保存执行一下:
+begin
+  dbms_output.put_line(hello_world('sfd'));
+end;
+
+--例子2   --当前电脑时间
+create or replace function now_time
+return DATE
+is
+  v_date date;
+BEGIN
+  v_date :=SYSDATE;
+  return v_date;
+end;
+
+
+--查看错误的语句:
+ select * from SYS.USER_ERRORS where NAME = upper('SUM2');
+
+--例子3   --当前电脑时间(报错,参数无效)
+create or replace function sum(x NUMBER,y  number)
+return number 
+is 
+ jk number(10);
+begin 
+  jk  := x+y;
+  return jk;
+end;
+
+--例子4  --获取给定部门的工资总和,要求:部门号定义为参数,工资总额定义为返回值       前提:表格存在
+create or replace function DeptSum(id number)
+return number
+is 
+   sumTotal number(10) :=0;
+   cursor salary_curse is select salary from emplyee where id = empt_id;
+begin 
+         for c in  salary_curse  loop
+           sumTotal := sumTotal + c.salary;
+         end loop;
+         return sumTotal;
+  END; 
+
+存储过程
+--例子1  定义一个存储过程:--获取给定部门的工资总和(通过out参数),要求:部门号和工资总额定义为参数
+Create or replace procedure   get_sal2(id number,sumTotal out number)
+Is
+ cursor salary_curse is select salary from emplyee where id = empt_id;
+begin 
+         sumTotal :=0;
+         for c in  salary_curse  loop
+           sumTotal := sumTotal + c.salary;
+         end loop;
+         Dbms_output.put_line(sumTotal);
+  END; 
+在edittext保存编辑好存储过程之后,需要重新打开以下ed,定义参数
+
+  declare
+       V_sal number(10):=0;
+Begin  
+      Dbms_output.put_line(get_sal2(80, V_sal));
+End;
+--例子2  定义一个存储过程完成以下操作:
+对给定部门(作为参数输入)的员工进行加薪操作,若其在公司的入职时间在(?,95)期间,为其加薪  %5
+[95,98)            %3
+[98,?)             %1
+得到以下返回结果:为此次加薪公司每月需要额外支付多少成本(定义一个out型的输出参数);
+Create  or replace procedure add_sal(dept_id number,temp_sal out  number)
+Is 
+Sursor sal_cursor is select employee_id,salary,hire_date from employee where department_id =dept_id;
+V_i number(4,2) :=0;
+Begin 
+ temp_sal:=0;
+For c in sal_cursor loop
+If to_char(c.hiredate,’yyyy’)<’1995’  then v_i:=0.05;
+Elsif to_char(c.hire_date,’yyyy’)<’1998’  then v_i:=0.03;
+Else  v_i:=0.01;
+End if;
+-- 更新工资
+Update employees  set salary =salary*(1+v_i) where employee_id=c. employee_id;
+--付出的成本 
+temp_sal:= temp_sal+c.salary *v_i;
+End loop;
+ 		Dbms_output.put_line(temp_sal);
+End;
+   
+调用这个存储过程:
+打开ed:
+  Declare 
+V_temp number (10):=0;
+Begin 
+        add_sal(80,v_temp);
+End;
+
+
+
+
+
+--  在commamnd window  查看错误: show errors;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

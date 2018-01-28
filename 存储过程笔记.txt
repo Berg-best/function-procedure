@@ -1,4 +1,4 @@
-存储函数
+                              存储函数
 --存储函数
 create or replace FUNCTION function_name(dept_id number,salary numbber)
 return number
@@ -12,6 +12,8 @@ exception
   
 end;         --在sql上输入/  回车创建
 
+
+
 --例子1  打印'hello,,world'
 create or  replace function  hello_world(logo varchar2)
 return VARCHAR2
@@ -24,6 +26,8 @@ end;
 begin
   dbms_output.put_line(hello_world('sfd'));
 end;
+
+
 
 --例子2   --当前电脑时间
 create or replace function now_time
@@ -39,6 +43,8 @@ end;
 --查看错误的语句:
  select * from SYS.USER_ERRORS where NAME = upper('SUM2');
 
+
+
 --例子3   --当前电脑时间(报错,参数无效)
 create or replace function sum(x NUMBER,y  number)
 return number 
@@ -48,6 +54,8 @@ begin
   jk  := x+y;
   return jk;
 end;
+
+
 
 --例子4  --获取给定部门的工资总和,要求:部门号定义为参数,工资总额定义为返回值       前提:表格存在
 create or replace function DeptSum(id number)
@@ -62,7 +70,11 @@ begin
          return sumTotal;
   END; 
 
-存储过程
+
+
+
+                              存储过程
+                              
 --例子1  定义一个存储过程:--获取给定部门的工资总和(通过out参数),要求:部门号和工资总额定义为参数
 Create or replace procedure   get_sal2(id number,sumTotal out number)
 Is
